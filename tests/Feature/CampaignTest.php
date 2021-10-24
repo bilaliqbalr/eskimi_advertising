@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use Database\Seeders\CampaignSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -35,18 +36,21 @@ class CampaignTest extends TestCase
     public function test_campaign_update_api_with_image_upload()
     {
         Storage::fake('images');
+        $user = User::factory()->create();
 
-        $response = $this->json('POST', '/campaign/save', [
-            'name' => 'Random name',
-            'date_from' => now()->addMinutes(5)->toDateString(),
-            'date_to' => now()->addDays(5)->toDateString(),
-            'total_budget' => mt_rand(100, 1000),
-            'daily_budget' => mt_rand(10, 100),
-            'image' => UploadedFile::fake()->image('random_image.jpg'),
-        ]);
+        $response = $this
+            ->actingAs($user)
+            ->json('POST', '/campaign/save', [
+                'name' => 'Random name',
+                'date_from' => now()->addMinutes(5)->toDateString(),
+                'date_to' => now()->addDays(5)->toDateString(),
+                'total_budget' => mt_rand(100, 1000),
+                'daily_budget' => mt_rand(10, 100),
+                'image' => UploadedFile::fake()->image('random_image.jpg'),
+            ]);
 
         // test if record updated with json response
-        $response->assertStatus(200)
+        $response->assertStatus(201)
             ->assertJsonPath('data.name', 'Random name');
 
         // checking image uploaded
@@ -55,7 +59,11 @@ class CampaignTest extends TestCase
 
     public function test_campaign_listing_api()
     {
-        $response = $this->json('GET', '/campaign/listing');
+        $user = User::factory()->create();
+
+        $response = $this
+            ->actingAs($user)
+            ->json('GET', '/campaign/listing');
 
         $response->assertStatus(200)
             ->assertJsonCount(10, 'data');

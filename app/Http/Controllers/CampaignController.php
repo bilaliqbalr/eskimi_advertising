@@ -48,10 +48,6 @@ class CampaignController extends Controller
             'image' => 'required|image',
         ]);
 
-//        if ($data->fails()) {
-//            return response()->json($data->errors(), 422);
-//        }
-
         $id = $request->get('id');
         $isNew = !empty($id);
 
