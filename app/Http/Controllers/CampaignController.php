@@ -7,6 +7,8 @@ use App\Http\Resources\CampaignResource;
 use App\Models\Campaign;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class CampaignController extends Controller
@@ -46,6 +48,10 @@ class CampaignController extends Controller
             'image' => 'required|image',
         ]);
 
+//        if ($data->fails()) {
+//            return response()->json($data->errors(), 422);
+//        }
+
         $id = $request->get('id');
         $isNew = !empty($id);
 
@@ -54,6 +60,9 @@ class CampaignController extends Controller
         } else {
             $campaign = Campaign::findOrFail($id);
         }
+
+        $imageName = $data['name'] . '-' . time() . '.' . $request->image->extension();
+        $data['image'] = $request->image->storeAs(public_path('images'), $imageName);
 
         $campaign->fill($data)->save();
         $code = $isNew ? 201 : 200;

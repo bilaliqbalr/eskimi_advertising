@@ -14,6 +14,14 @@ class CampaignResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'date_from' => $this->date_from->toDateString(),
+            'date_to' => $this->date_to->toDateString(),
+            'total_budget' => $this->total_budget,
+            'daily_budget' => $this->daily_budget,
+            'image' => url(str_replace('public/', '', $this->image)),
+        ];
     }
 }

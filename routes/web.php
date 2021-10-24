@@ -31,8 +31,8 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
 
     // API calls
     Route::group(['prefix' => 'campaign'], function () {
-        Route::get('/listing', 'CampaignController@getListing');
-        Route::post('/save', 'CampaignController@save');
+        Route::get('/listing', 'CampaignController@getListing')->name('campaign.listing');
+        Route::post('/save', 'CampaignController@save')->name('campaign.save');
     });
 });
 
