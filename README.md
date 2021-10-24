@@ -14,6 +14,9 @@ cd ../
 
 # Execute following commands to install app
 composer install
+npm install
+npm run dev
+
 php artisan migrate
 ```
 Once all done, access application via `http://localhost`
